@@ -23,7 +23,10 @@ class Outplayed:
         self.driver = self.start_driver()
         self.main_url = ""
 
+    def start_driver(self):
+        pass
+
+
+
 if __name__ == '__main__':
     print('Hello, I hope you had a lovely day')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
