@@ -179,6 +179,8 @@ if __name__ == '__main__':
     print('Hello, I hope you had a lovely day')
     app = Outplayed()
     app.driver.get(app.main_url)
+    app.driver.maximize_window()
     sleep(8)
     app.get_tennis()
     app.get_competitions()
+    print("That's it my friend")
