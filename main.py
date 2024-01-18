@@ -61,10 +61,20 @@ class Outplayed:
         # inform the Programmer about the success
         print("Got to the 'all competitions' page ")
 
-    # Collect details about competitions
+    # Collect details about the competitions
     def get_competitions(self):
+        # focus on the right set of data
+        competitions = self.driver.find_elements(By.CSS_SELECTOR, 'ms-grid[sortingtracking="Competitions"] .event-group')
+        # iterate through all groups, no matter the number
+        for competition in competitions:
+            # Get the name for each competition
+            name = competition.find_element(By.CSS_SELECTOR, ' ms-league-header.league-group').text
+            # get data set for each competition
+            details = competition.find_elements(By.CSS_SELECTOR, "ms-event.grid-event")
 
-        pass
+
+
+
 
     # collect details about the time
     def get_time(self, time_text):
