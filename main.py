@@ -11,6 +11,8 @@ from random import randrange
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.service import Service # as ChromeService
+from datetime import datetime, timedelta, timezone
+
 
 
 class Outplayed:
@@ -47,7 +49,14 @@ class Outplayed:
     def get_tennis(self):
         btn_tennis = self.driver.find_element(By.XPATH, "//div[contains(@class, 'main-items')]//vn-menu-item//a[contains(text(), 'Tennis')]")
         btn_tennis.click()
-        sleep(3)
+        sleep(4)
+        btn_all = self.driver.find_element(By.XPATH, "//div[contains(@class, 'ms-top-items-widget')]//div[contains(@class, 'list-all')]//a[contains(@class, 'ms-active-highlight')][1]")
+        btn_all.click()
+        sleep(5)
+        print("Got to the 'all competitions' page ")
+
+    def get_competitions(self):
+
 
 
 
