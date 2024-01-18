@@ -23,8 +23,26 @@ class Outplayed:
         self.driver = self.start_driver()
         self.main_url = ""
 
-    def start_driver(self):
-        pass
+    # Create the driver
+    @staticmethod
+    def start_driver(pictures=False):
+        # Create ChromeOptions instance
+        service = Service()
+        options = webdriver.ChromeOptions()
+        # Adding argument to disable the AutomationControlled flag
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        # Exclude the collection of enable-automation switches
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        if not pictures:
+            # Do not download images
+            options.add_argument('--blink-settings=imagesEnabled=false')
+
+        # Turn-off userAutomationExtension
+        options.add_experimental_option("useAutomationExtension", False)
+        # Old version of the driver creation in case if the latest version won't work (This tends to happen after an update to the browser)
+        # driver = webdriver.Chrome(options=options, service=ChromeService(ChromeDriverManager(version="114.0.5735.16").install()))
+        driver = webdriver.Chrome(service=service, options=options)
+        return driver
 
 
 
