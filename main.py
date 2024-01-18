@@ -12,6 +12,8 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.service import Service # as ChromeService
 from datetime import datetime, timedelta, timezone
+from fractions import Fraction
+
 
 
 
@@ -68,20 +70,24 @@ class Outplayed:
         # iterate through all groups, no matter the number
         for competition in competitions:
             # Get the name for each competition
-            name = competition.find_element(By.CSS_SELECTOR, ' ms-league-header.league-group').text
+            tournament_name = competition.find_element(By.CSS_SELECTOR, ' ms-league-header.league-group').text
             # get data set for each competition
             details = competition.find_elements(By.CSS_SELECTOR, "ms-event.grid-event")
-            # iterate through all events details
+            # iterate through every event details
             for detail in details:
                 try:
                     # Get the event name in the required format
                     players = detail.find_elements(By.CSS_SELECTOR, "div.participants-pair-game div.participant")
                     player_list = [player.text for player in players if players != ""]
+
                     if len(player_list) >= 2:
                         event_name = f"{players[0]} v {players[1]}"
                         print(event_name)
+                    player_a = player_list[0]
+                    player_b = player_list[1]
                 except Exception as e:
                     print(e)
+                    players, player_list, event_name, player_b, player_a = "", "", "","", ""
                     print("Cannot access Plyer name!")
 
                 # Get the event time in the required format
@@ -90,6 +96,7 @@ class Outplayed:
                     exact_time = self.get_time(event_time)
                 except Exception as e:
                     print(e)
+                    exact_time = ""
                     print("Failed to collect time")
 
                 # Get current time in UTC
@@ -98,9 +105,52 @@ class Outplayed:
                 except:
                     print("Well, maybe you lost internet or something")
 
+                try:
+                    all_odds = detail.find_elements(By.CSS_SELECTOR, "ms-option div.option-indicator")
+                    odds = [odd.text for odd in all_odds if all_odds != 0]
+                    odds_a = self.calculate_odds(odds[0])
+                    odds_b = self.calculate_odds(odds[1])
+                except Exception as e:
+                    print(e)
+                    print("Failed to collect odds")
+                    odds = []
 
+                try:
+                    details = {
+                        "tournament_name": tournament_name,
+                        "last_fetched": time_now,
+                        "events": [
+                            {
+                                "event_name": event_name,
+                                "start_time": exact_time,
+                                "outcomes": [
+                                    {
+                                        "outcome_name": player_a,
+                                        "odds": odds_a
+                                    },
+                                    {
+                                        "outcome_name": player_b,
+                                        "odds": odds_b
+                                    }
+                                ]
+                            }
+                        ]
 
+                    }
+                except:
+                    print("Failed to collect required data, have a look at it tomorrow Stan, you are too tired")
 
+    def calculate_odds(fractional_odds):
+        try:
+            # Parse the fractional odds
+            odds = Fraction(fractional_odds)
+
+            # Convert to decimal format and round to two decimal places
+            decimal_odds = round(float(odds) + 1, 2)
+
+            return decimal_odds
+        except ValueError:
+            print("Invalid input format. Please provide odds in the form 'a/b'.")
 
     # collect details about the time
     def get_time(self, time_text):
@@ -131,3 +181,4 @@ if __name__ == '__main__':
     app.driver.get(app.main_url)
     sleep(8)
     app.get_tennis()
+    app.get_competitions()
