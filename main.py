@@ -71,6 +71,32 @@ class Outplayed:
             name = competition.find_element(By.CSS_SELECTOR, ' ms-league-header.league-group').text
             # get data set for each competition
             details = competition.find_elements(By.CSS_SELECTOR, "ms-event.grid-event")
+            # iterate through all events details
+            for detail in details:
+                try:
+                    # Get the event name in the required format
+                    players = detail.find_elements(By.CSS_SELECTOR, "div.participants-pair-game div.participant")
+                    player_list = [player.text for player in players if players != ""]
+                    if len(player_list) >= 2:
+                        event_name = f"{players[0]} v {players[1]}"
+                        print(event_name)
+                except Exception as e:
+                    print(e)
+                    print("Cannot access Plyer name!")
+
+                # Get the event time in the required format
+                try:
+                    event_time = detail.find_element(By.CSS_SELECTOR, ".grid-event-timer .starting-time").text
+                    exact_time = self.get_time(event_time)
+                except Exception as e:
+                    print(e)
+                    print("Failed to collect time")
+
+                # Get current time in UTC
+                try:
+                    time_now = datetime.utcnow()
+                except:
+                    print("Well, maybe you lost internet or something")
 
 
 
@@ -93,7 +119,7 @@ class Outplayed:
             event_time += timedelta(days=1)
         # Print the event time in the desired format (yyyy-mm-dd hh:mm)
         formatted_event_time = event_time.strftime("%Y-%m-%d %H:%M")
-        return formatted_event_time, current_utc_time
+        return formatted_event_time
 
 
 
