@@ -21,7 +21,7 @@ class Outplayed:
         # self.error = False
         self.params = ({'in_progress': 0, 'failed': 0, 'complete': 0})
         self.driver = self.start_driver()
-        self.main_url = ""
+        self.main_url = "https://sports.bwin.com/"
 
     # Create the driver
     @staticmethod
@@ -44,7 +44,16 @@ class Outplayed:
         driver = webdriver.Chrome(service=service, options=options)
         return driver
 
+    def get_tennis(self):
+        btn_tennis = self.driver.find_element(By.XPATH, "//div[contains(@class, 'main-items')]//vn-menu-item//a[contains(text(), 'Tennis')]")
+        btn_tennis.click()
+        sleep(3)
+
 
 
 if __name__ == '__main__':
     print('Hello, I hope you had a lovely day')
+    app = Outplayed()
+    app.driver.get(app.main_url)
+    sleep(8)
+    app.get_tennis()
