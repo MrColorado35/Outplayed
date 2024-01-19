@@ -114,9 +114,9 @@ class Outplayed:
                     all_odds = detail.find_elements(By.CSS_SELECTOR, "ms-option div.option-indicator")
                     odds = [odd.text for odd in all_odds if all_odds != 0]
                     odd_a = odds[0]  # self.calculate_odds(odds[0])
-                    print(odd_a)
+                    print(f"Odd a is equal to: {odd_a}")
                     odd_b = odds[1]  # self.calculate_odds(odds[1])
-                    print(odd_b)
+                    print(f"Odd b is equal to: {odd_b}")
                     decimal_odd_a = self.calculate_odds(odd_a)
                     decimal_odd_b = self.calculate_odds(odd_b)
                 except Exception as e:
@@ -155,7 +155,7 @@ class Outplayed:
                 except:
                     print("Failed to collect required data, have a look at it tomorrow Stan, you are too tired")
 
-    def calculate_odds(fractional_odds):
+    def calculate_odds(self, fractional_odds):
         try:
             # Parse the fractional odds
             odds = Fraction(fractional_odds)
@@ -174,7 +174,7 @@ class Outplayed:
 
         # Parse the input time
         # event_time = datetime.strptime(time_text, "%Y-%m-%d %I:%M %p")
-        event_time = datetime.strptime(time_text, "Tomorrow %I:%M %p")
+        event_time = datetime.strptime(time_text, "Tomorrow / %I:%M %p")
 
         # Calculate the time difference between now and the event time
         time_difference = event_time - current_utc_time
