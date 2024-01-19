@@ -26,7 +26,7 @@ class Outplayed:
         self.params = ({'in_progress': 0, 'failed': 0, 'complete': 0})
         self.driver = self.start_driver()
         # self.main_url = "https://sports.bwin.com/"
-        self.main_url = "https://sports.bwin.com/en/sports/tennis-5"
+        self.main_url = "https://sports.bwin.com/en/sports/tennis-5/betting/grand-slam-tournaments-5"
 
     # Create the driver
     @staticmethod
@@ -80,15 +80,16 @@ class Outplayed:
                     # Get the event name in the required format
                     players = detail.find_elements(By.CSS_SELECTOR, "div.participants-pair-game div.participant")
                     player_list = [player.text for player in players if players != ""]
+                    print(player_list)
 
-                    if len(player_list) >= 2:
+                    if len(player_list) > 0:
                         event_name = f"{players[0]} v {players[1]}"
                         print(event_name)
                     player_a = player_list[0]
                     player_b = player_list[1]
                 except Exception as e:
                     print(e)
-                    players, player_list, event_name, player_b, player_a = "", "", "","", ""
+                    players, player_list, event_name, player_b, player_a = "", "", "", "", ""
                     print("Cannot access Plyer name!")
 
                 # Get the event time in the required format
@@ -141,7 +142,7 @@ class Outplayed:
                     for k, v in details.items():
                         print(f'{k} = {v}')
 
-                        # send details to MongoDB. "data" will be a name of table inside of your database collection
+                    # send details to MongoDB. "data" will be a name of table inside of your database collection
                     self.db.data.update_one({"tournament_name": tournament_name, "start_time": exact_time,}, {'$set': details}, upsert=True)
                 except:
                     print("Failed to collect required data, have a look at it tomorrow Stan, you are too tired")
