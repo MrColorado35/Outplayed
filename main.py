@@ -4,17 +4,16 @@
 from time import sleep
 from selenium.webdriver.common.by import By
 from pymongo import MongoClient
-import selenium.common.exceptions as EX
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from random import randrange
+from datetime import datetime, timedelta, timezone
+# import selenium.common.exceptions as EX
+# from selenium.webdriver.support.wait import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
+# from random import randrange
 from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.chrome.service import Service # as ChromeService
+# from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.service import Service  # as ChromeService
 from datetime import datetime, timedelta, timezone
 from fractions import Fraction
-
-
 
 
 class Outplayed:
@@ -52,13 +51,15 @@ class Outplayed:
     # Once you are on the right page, press two buttons to get to teh required data
     def get_tennis(self):
         # Find required button
-        btn_tennis = self.driver.find_element(By.XPATH, "//div[contains(@class, 'main-items')]//vn-menu-item//a[contains(text(), 'Tennis')]")
+        btn_tennis = self.driver.find_element(By.XPATH,
+                                              "//div[contains(@class, 'main-items')]//vn-menu-item//a[contains(text(), 'Tennis')]")
         # Simulate clicking
         btn_tennis.click()
         # Allow the page to load
         sleep(4)
         # Repeat last 3 steps with another button
-        btn_all = self.driver.find_element(By.XPATH, "//div[contains(@class, 'ms-top-items-widget')]//div[contains(@class, 'list-all')]//a[contains(@class, 'ms-active-highlight')][1]")
+        btn_all = self.driver.find_element(By.XPATH,
+                                           "//div[contains(@class, 'ms-top-items-widget')]//div[contains(@class, 'list-all')]//a[contains(@class, 'ms-active-highlight')][1]")
         btn_all.click()
         sleep(5)
         # inform the Programmer about the success
@@ -67,7 +68,8 @@ class Outplayed:
     # Collect details about the competitions
     def get_competitions(self):
         # focus on the right set of data
-        competitions = self.driver.find_elements(By.CSS_SELECTOR, 'ms-grid[sortingtracking="Competitions"] .event-group')
+        competitions = self.driver.find_elements(By.CSS_SELECTOR,
+                                                 'ms-grid[sortingtracking="Competitions"] .event-group')
         # iterate through all groups, no matter the number
         for competition in competitions:
             # Get the name for each competition
@@ -111,9 +113,9 @@ class Outplayed:
                 try:
                     all_odds = detail.find_elements(By.CSS_SELECTOR, "ms-option div.option-indicator")
                     odds = [odd.text for odd in all_odds if all_odds != 0]
-                    odd_a = odds[0] # self.calculate_odds(odds[0])
+                    odd_a = odds[0]  # self.calculate_odds(odds[0])
                     print(odd_a)
-                    odd_b = odds[1] # self.calculate_odds(odds[1])
+                    odd_b = odds[1]  # self.calculate_odds(odds[1])
                     print(odd_b)
                     decimal_odd_a = self.calculate_odds(odd_a)
                     decimal_odd_b = self.calculate_odds(odd_b)
@@ -148,7 +150,8 @@ class Outplayed:
                         print(f'{k} = {v}')
 
                     # send details to MongoDB. "data" will be a name of table inside your database collection
-                    self.db.data.update_one({"tournament_name": tournament_name, "start_time": exact_time}, {'$set': details}, upsert=True)
+                    self.db.data.update_one({"tournament_name": tournament_name, "start_time": exact_time},
+                                            {'$set': details}, upsert=True)
                 except:
                     print("Failed to collect required data, have a look at it tomorrow Stan, you are too tired")
 
@@ -170,8 +173,8 @@ class Outplayed:
         current_utc_time = datetime.utcnow()
 
         # Parse the input time
-        event_time_str = time_text
-        event_time = datetime.strptime(event_time_str, "%Y-%m-%d %I:%M %p")
+        # event_time = datetime.strptime(time_text, "%Y-%m-%d %I:%M %p")
+        event_time = datetime.strptime(time_text, "Tomorrow %I:%M %p")
 
         # Calculate the time difference between now and the event time
         time_difference = event_time - current_utc_time
@@ -182,9 +185,6 @@ class Outplayed:
         # Print the event time in the desired format (yyyy-mm-dd hh:mm)
         formatted_event_time = event_time.strftime("%Y-%m-%d %H:%M")
         return formatted_event_time
-
-
-
 
 
 if __name__ == '__main__':
