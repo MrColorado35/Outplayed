@@ -82,11 +82,12 @@ class Outplayed:
                     player_list = [player.text for player in players if players != ""]
                     print(player_list)
 
-                    if len(player_list) > 0:
-                        event_name = f"{players[0]} v {players[1]}"
-                        print(event_name)
+                    # if len(player_list) > 0:
+
                     player_a = player_list[0]
                     player_b = player_list[1]
+                    event_name = f"{player_a} v {player_b}"
+                    print(event_name)
                 except Exception as e:
                     print(e)
                     players, player_list, event_name, player_b, player_a = "", "", "", "", ""
@@ -102,16 +103,20 @@ class Outplayed:
                     print("Failed to collect time")
 
                 # Get current time in UTC
-                try:
-                    time_now = datetime.utcnow()
-                except:
-                    print("Well, maybe you lost internet or something")
+                # try:
+                time_now = datetime.utcnow()
+                # except:
+                #     print("Well, maybe you lost internet or something")
 
                 try:
                     all_odds = detail.find_elements(By.CSS_SELECTOR, "ms-option div.option-indicator")
                     odds = [odd.text for odd in all_odds if all_odds != 0]
-                    odds_a = self.calculate_odds(odds[0])
-                    odds_b = self.calculate_odds(odds[1])
+                    odd_a = odds[0] # self.calculate_odds(odds[0])
+                    print(odd_a)
+                    odd_b = odds[1] # self.calculate_odds(odds[1])
+                    print(odd_b)
+                    decimal_odd_a = self.calculate_odds(odd_a)
+                    decimal_odd_b = self.calculate_odds(odd_b)
                 except Exception as e:
                     print(e)
                     print("Failed to collect odds")
@@ -128,11 +133,11 @@ class Outplayed:
                                 "outcomes": [
                                     {
                                         "outcome_name": player_a,
-                                        "odds": odds_a
+                                        "odds": decimal_odd_a
                                     },
                                     {
                                         "outcome_name": player_b,
-                                        "odds": odds_b
+                                        "odds": decimal_odd_b
                                     }
                                 ]
                             }
@@ -142,8 +147,8 @@ class Outplayed:
                     for k, v in details.items():
                         print(f'{k} = {v}')
 
-                    # send details to MongoDB. "data" will be a name of table inside of your database collection
-                    self.db.data.update_one({"tournament_name": tournament_name, "start_time": exact_time,}, {'$set': details}, upsert=True)
+                    # send details to MongoDB. "data" will be a name of table inside your database collection
+                    self.db.data.update_one({"tournament_name": tournament_name, "start_time": exact_time}, {'$set': details}, upsert=True)
                 except:
                     print("Failed to collect required data, have a look at it tomorrow Stan, you are too tired")
 
