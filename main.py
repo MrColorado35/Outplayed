@@ -138,6 +138,11 @@ class Outplayed:
                         ]
 
                     }
+                    for k, v in details.items():
+                        print(f'{k} = {v}')
+
+                        # send details to MongoDB. "data" will be a name of table inside of your database collection
+                    self.db.data.update_one({"tournament_name": tournament_name, "start_time": exact_time,}, {'$set': details}, upsert=True)
                 except:
                     print("Failed to collect required data, have a look at it tomorrow Stan, you are too tired")
 
