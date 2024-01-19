@@ -25,7 +25,8 @@ class Outplayed:
         # self.error = False
         self.params = ({'in_progress': 0, 'failed': 0, 'complete': 0})
         self.driver = self.start_driver()
-        self.main_url = "https://sports.bwin.com/"
+        # self.main_url = "https://sports.bwin.com/"
+        self.main_url = "https://sports.bwin.com/en/sports/tennis-5"
 
     # Create the driver
     @staticmethod
@@ -181,6 +182,6 @@ if __name__ == '__main__':
     app.driver.get(app.main_url)
     app.driver.maximize_window()
     sleep(8)
-    app.get_tennis()
+    # app.get_tennis()
     app.get_competitions()
     print("That's it my friend")
