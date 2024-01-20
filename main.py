@@ -190,18 +190,31 @@ class Outplayed:
         formatted_event_time = event_time.strftime("%Y-%m-%d %H:%M")
         return formatted_event_time
 
+
+
     def other_buttons(self):
         buttons = self.driver.find_elements(By.XPATH, "//ms-item[contains(@class, 'collapsed')][position() >= 2]//a")
-        for i in range(3):
+        for i in range(6):
             try:
                 btn = buttons[i]
                 btn.click()
                 sleep(3)
+                self.scroll_down()
                 self.get_competitions()
                 print(f"Completed collecting data for the competition number {i}")
             except Exception as e:
                 print(e)
-                print(f"Failed to collect datafor the competition number {i}")
+                print(f"Failed to collect data for the competition number {i}")
+
+    def scroll_down(self, element=""):
+        if element != "":
+            print("scrolling to the element")
+            #scroll down to the required element (It will be presented on top of the page, if possible)
+            self.driver.execute_script("arguments[0].scrollIntoView();", element)
+        else:
+            print("Scrolling to the bottom of the page")
+            # scroll down to the bottom of the page if no element was provided
+            self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 
 if __name__ == '__main__':
     print('Hello, I hope you have a lovely day')
