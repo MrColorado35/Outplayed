@@ -99,7 +99,10 @@ class Outplayed:
                 # Get the event time in the required format
                 try:
                     event_time = detail.find_element(By.CSS_SELECTOR, ".grid-event-timer .starting-time").text
-                    exact_time = self.get_time(event_time)
+                    if "In-Play" in event_time:
+                        exact_time = "In Play"
+                    else:
+                        exact_time = self.get_time(event_time)
                 except Exception as e:
                     print(e)
                     exact_time = ""
@@ -200,11 +203,13 @@ class Outplayed:
                 print(f"Failed to collect datafor the competition number {i}")
 
 if __name__ == '__main__':
-    print('Hello, I hope you had a lovely day')
+    print('Hello, I hope you have a lovely day')
     app = Outplayed()
     app.driver.get(app.main_url)
     app.driver.maximize_window()
     sleep(8)
     # app.get_tennis()
     app.get_competitions()
+    print("age 1 collected")
+    app.other_buttons()
     print("That's it my friend")
