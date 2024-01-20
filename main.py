@@ -102,10 +102,7 @@ class Outplayed:
                     print("Failed to collect time")
 
                 # Get current time in UTC
-                # try:
                 time_now = datetime.utcnow()
-                # except:
-                #     print("Well, maybe you lost internet or something")
 
                 try:
                     all_odds = detail.find_elements(By.CSS_SELECTOR, "ms-option div.option-indicator")
