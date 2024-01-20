@@ -156,7 +156,7 @@ class Outplayed:
                         print(f'{k} = {v}')
 
                     # send details to MongoDB. "data" will be a name of table inside your database collection
-                    self.db.data_v4.update_one({"tournament_name": tournament_name, "event_name": event_name}, # "last_fetched": time_now},
+                    self.db.data_v5.update_one({"tournament_name": tournament_name, "event_name": event_name}, # "last_fetched": time_now},
                                             {'$set': details}, upsert=True)
                 except:
                     print("Failed to collect required data, have a look at it tomorrow Stan, you are too tired")
@@ -230,7 +230,8 @@ class Outplayed:
     # Go through all tournaments
     def other_buttons(self): #ms-item-tree.all-competitions
         buttons = self.driver.find_elements(By.XPATH, "//ms-item-tree[contains(@class, 'all-competitions')]//ms-item[contains(@class, 'collapsed')]/a") #[position() >= 2]/a")
-        for i in range(4):
+        # buttons = self.driver.find_elements(By.CSS_SELECTOR, "ms-item.active+ ms-item-tree a")
+        for i in range(6):
             try:
                 print("Searching for the button")
                 btn = buttons[i]
@@ -239,9 +240,9 @@ class Outplayed:
                 sleep(3)
                 self.btn_level_2()
                 print("Second click performed")
-                self.scroll_down()
-                print("Scrolled down")
-                self.get_competitions()
+                # self.scroll_down()
+                # print("Scrolled down")
+                # self.get_competitions()
                 print(f"Completed collecting data for the competition number {i}")
             except Exception as e:
                 print(e)
@@ -249,9 +250,18 @@ class Outplayed:
                 sleep(24)
 
     def btn_level_2(self):
-        second_click = self.driver.find_element(By.XPATH, "//ms-item-tree[contains(@class, 'all-competitions')]//ms-item[contains(@class, 'expanded')][last()]/following-sibling::ms-item-tree//a[1]")
-        second_click.click()
-        sleep(3)
+        # second_click = self.driver.find_element(By.XPATH, "//ms-item-tree[contains(@class, 'all-competitions')]//ms-item[contains(@class, 'expanded')][last()]/following-sibling::ms-item-tree//a[1]")
+        second_clicks = self.driver.find_elements(By.CSS_SELECTOR, "ms-item+ ms-item-tree.item-level-2 a.ms-active-highlight") #"ms-item.active + ms-item-tree a")
+        for c in range(len(second_clicks)):
+            second_click = second_clicks[c]
+            if "All" in second_click.text:
+                second_click.click()
+                sleep(3)
+                self.scroll_down()
+                print("Scrolled down")
+                self.get_competitions()
+            else:
+                continue
 
     def scroll_down(self, element=""):
         try:
