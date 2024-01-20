@@ -156,7 +156,7 @@ class Outplayed:
                         print(f'{k} = {v}')
 
                     # send details to MongoDB. "data" will be a name of table inside your database collection
-                    self.db.data_v2.update_one({"tournament_name": tournament_name, "last_fetched": time_now},
+                    self.db.data_v4.update_one({"tournament_name": tournament_name, "event_name": event_name}, # "last_fetched": time_now},
                                             {'$set': details}, upsert=True)
                 except:
                     print("Failed to collect required data, have a look at it tomorrow Stan, you are too tired")
@@ -222,25 +222,36 @@ class Outplayed:
         return formatted_event_time
 
     def accept_cookies(self):
+        # Find and close cookies message
         cookies_btn  = self.driver.find_element(By.CSS_SELECTOR, "#onetrust-accept-btn-handler")
         cookies_btn.click()
         sleep(2)
 
-
-    def other_buttons(self):
-        buttons = self.driver.find_elements(By.XPATH, "//ms-item[contains(@class, 'collapsed')][position() >= 2]/a")
-        for i in range(2,6):
+    # Go through all tournaments
+    def other_buttons(self): #ms-item-tree.all-competitions
+        buttons = self.driver.find_elements(By.XPATH, "//ms-item-tree[contains(@class, 'all-competitions')]//ms-item[contains(@class, 'collapsed')]/a") #[position() >= 2]/a")
+        for i in range(4):
             try:
+                print("Searching for the button")
                 btn = buttons[i]
                 btn.click()
+                print("Button clicked")
                 sleep(3)
+                self.btn_level_2()
+                print("Second click performed")
                 self.scroll_down()
+                print("Scrolled down")
                 self.get_competitions()
                 print(f"Completed collecting data for the competition number {i}")
             except Exception as e:
                 print(e)
                 print(f"Failed to collect data for the competition number {i}, have a look at it")
                 sleep(24)
+
+    def btn_level_2(self):
+        second_click = self.driver.find_element(By.XPATH, "//ms-item-tree[contains(@class, 'all-competitions')]//ms-item[contains(@class, 'expanded')][last()]/following-sibling::ms-item-tree//a[1]")
+        second_click.click()
+        sleep(3)
 
     def scroll_down(self, element=""):
         try:
