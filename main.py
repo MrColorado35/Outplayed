@@ -5,7 +5,7 @@ from time import sleep
 from selenium.webdriver.common.by import By
 from pymongo import MongoClient
 from datetime import datetime, timedelta, timezone
-# import selenium.common.exceptions as EX
+import selenium.common.exceptions as EX
 # from selenium.webdriver.support.wait import WebDriverWait
 # from selenium.webdriver.support import expected_conditions as EC
 # from random import randrange
@@ -99,10 +99,12 @@ class Outplayed:
                 # Get the event time in the required format
                 try:
                     event_time = detail.find_element(By.CSS_SELECTOR, ".grid-event-timer .starting-time").text
-                    if "In-Play" in event_time:
-                        exact_time = "In Play"
-                    else:
-                        exact_time = self.get_time(event_time)
+                    # if "In-Play" in event_time:
+                    #     exact_time = "In Play"
+                    # else:
+                    exact_time = self.get_time(event_time)
+                except EX.NoSuchElementException:
+                    exact_time = detail.find_element(By.CSS_SELECTOR, ".grid-event-info").text
                 except Exception as e:
                     print(e)
                     exact_time = ""
@@ -197,8 +199,8 @@ class Outplayed:
 
 
     def other_buttons(self):
-        buttons = self.driver.find_elements(By.XPATH, "//ms-item[contains(@class, 'collapsed')][position() >= 2]//a")
-        for i in range(6):
+        buttons = self.driver.find_elements(By.XPATH, "//ms-item[contains(@class, 'collapsed')][position() >= 2]/a")
+        for i in range(2,6):
             try:
                 btn = buttons[i]
                 btn.click()
