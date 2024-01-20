@@ -48,7 +48,8 @@ class Outplayed:
         driver = webdriver.Chrome(service=service, options=options)
         return driver
 
-    # Once you are on the right page, press two buttons to get to teh required data
+    # Once you are on the right page, press two buttons to get to the required data
+    # Also, xpath selectors here are wrong, but as it's unpaid project, I really don't want to spend too much time on fixing this part if it's not necessary
     def get_tennis(self):
         # Find required button
         btn_tennis = self.driver.find_element(By.XPATH,
@@ -186,7 +187,18 @@ class Outplayed:
         formatted_event_time = event_time.strftime("%Y-%m-%d %H:%M")
         return formatted_event_time
 
-/
+    def other_buttons(self):
+        buttons = self.driver.find_elements(By.XPATH, "//ms-item[contains(@class, 'collapsed')][position() >= 2]//ms-item//a")
+        for i in range(3):
+            try:
+                btn = buttons[i]
+                btn.click()
+                sleep(3)
+                self.get_competitions()
+                print(f"Completed collecting data for the competition number {i}")
+            except:
+                print(f"Failed to collect datafor the competition number {i}")
+
 if __name__ == '__main__':
     print('Hello, I hope you had a lovely day')
     app = Outplayed()
