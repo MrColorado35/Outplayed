@@ -147,7 +147,7 @@ class Outplayed:
                         print(f'{k} = {v}')
 
                     # send details to MongoDB. "data" will be a name of table inside your database collection
-                    self.db.data_v6.update_one({"tournament_name": tournament_name, "last_fetched": time_now},
+                    self.db.data_v7.update_one({"tournament_name": tournament_name, "last_fetched": time_now},
                                             {'$set': details}, upsert=True)
                 except:
                     print("Failed to collect required data, have a look at it tomorrow Stan, you are too tired")
@@ -181,6 +181,16 @@ class Outplayed:
 
             # Parse the combined datetime
             event_time = datetime.strptime(event_time_str, "%Y-%m-%d %I:%M %p")
+        elif "Today" in time_text:
+            # Extract the time part (e.g., "9:15 PM")
+            time_part = time_text.split("Today / ")[1]
+
+            # Combine with today's date
+            event_time_str = f"{current_utc_time.strftime('%Y-%m-%d')} {time_part}"
+
+            # Parse the combined datetime
+            event_time = datetime.strptime(event_time_str, "%Y-%m-%d %I:%M %p")
+
         else:
             # Parse the input time for today
             event_time = datetime.strptime(time_text, "%Y-%m-%d %I:%M %p")
