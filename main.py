@@ -96,6 +96,8 @@ class Outplayed:
                     exact_time = self.get_time(event_time)
                 except EX.NoSuchElementException:
                     exact_time = detail.find_element(By.CSS_SELECTOR, ".grid-event-info").text
+                    if "In-Play" in exact_time:
+                        continue
                 except Exception as e:
                     print(e)
                     exact_time = ""
@@ -144,7 +146,7 @@ class Outplayed:
                         print(f'{k} = {v}')
 
                     # send details to MongoDB. "data" will be a name of table inside your database collection
-                    self.db.data_v7.update_one({"tournament_name": tournament_name, "last_fetched": time_now},
+                    self.db.data_v8.update_one({"tournament_name": tournament_name, "last_fetched": time_now},
                                             {'$set': details}, upsert=True)
                 except:
                     print("Failed to collect required data, have a look at it tomorrow Stan, you are too tired")
