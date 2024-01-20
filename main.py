@@ -1,29 +1,23 @@
-# This is a sample Python script.
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 from time import sleep
 from selenium.webdriver.common.by import By
 from pymongo import MongoClient
-from datetime import datetime, timedelta, timezone
 import selenium.common.exceptions as EX
-# from selenium.webdriver.support.wait import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as EC
-# from random import randrange
 from selenium import webdriver
-# from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.chrome.service import Service  # as ChromeService
+from selenium.webdriver.chrome.service import Service
 from datetime import datetime, timedelta, timezone
 from fractions import Fraction
 
 
 class Outplayed:
-    # assign default parameters while calling the app for the first time
+    # assign default parameters while calling the app
     def __init__(self):
+        # Connect to your local MongoDB
         self.client = MongoClient("mongodb://localhost:27017/")
+        # Create a collection in your database
         self.db = self.client.Outplayed
-        # self.error = False
-        self.params = ({'in_progress': 0, 'failed': 0, 'complete': 0})
+        # Create the driver
         self.driver = self.start_driver()
+        # First version was designed to go through several click elements, but then to cat it short I changed it to go straight where we want to be.
         # self.main_url = "https://sports.bwin.com/"
         self.main_url = "https://sports.bwin.com/en/sports/tennis-5/betting/grand-slam-tournaments-5"
 
@@ -49,7 +43,7 @@ class Outplayed:
         return driver
 
     # Once you are on the right page, press two buttons to get to the required data
-    # Also, xpath selectors here are wrong, but as it's unpaid project, I really don't want to spend too much time on fixing this part if it's not necessary
+    # Also, xpath selectors here are wrong, I really don't want to spend too much time on fixing this part if it's not necessary
     def get_tennis(self):
         # Find required button
         btn_tennis = self.driver.find_element(By.XPATH,
