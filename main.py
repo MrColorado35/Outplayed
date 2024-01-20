@@ -156,7 +156,7 @@ class Outplayed:
                         print(f'{k} = {v}')
 
                     # send details to MongoDB. "data" will be a name of table inside your database collection
-                    self.db.data.update_one({"tournament_name": tournament_name, "last_fetched": time_now},
+                    self.db.data_v2.update_one({"tournament_name": tournament_name, "last_fetched": time_now},
                                             {'$set': details}, upsert=True)
                 except:
                     print("Failed to collect required data, have a look at it tomorrow Stan, you are too tired")
@@ -174,13 +174,41 @@ class Outplayed:
             print("Invalid input format. Please provide odds in the form 'a/b'.")
 
     # collect details about the time
+    # def get_time(self, time_text):
+    #     # Get the current UTC time
+    #     current_utc_time = datetime.utcnow()
+    #
+    #     # Parse the input time
+    #     # event_time = datetime.strptime(time_text, "%Y-%m-%d %I:%M %p")
+    #     event_time = datetime.strptime(time_text, "Tomorrow / %I:%M %p")
+    #
+    #     # Calculate the time difference between now and the event time
+    #     time_difference = event_time - current_utc_time
+    #
+    #     # If the event is today, add 1 day to the event time
+    #     if time_difference.days == 0 and time_difference.seconds < 0:
+    #         event_time += timedelta(days=1)
+    #     # Print the event time in the desired format (yyyy-mm-dd hh:mm)
+    #     formatted_event_time = event_time.strftime("%Y-%m-%d %H:%M")
+    #     return formatted_event_time
     def get_time(self, time_text):
         # Get the current UTC time
         current_utc_time = datetime.utcnow()
 
         # Parse the input time
-        # event_time = datetime.strptime(time_text, "%Y-%m-%d %I:%M %p")
-        event_time = datetime.strptime(time_text, "Tomorrow / %I:%M %p")
+        event_time = None
+        if "Tomorrow" in time_text:
+            # Extract the time part (e.g., "12:15 AM")
+            time_part = time_text.split("Tomorrow / ")[1]
+
+            # Combine with tomorrow's date
+            event_time_str = f"{(current_utc_time + timedelta(days=1)).strftime('%Y-%m-%d')} {time_part}"
+
+            # Parse the combined datetime
+            event_time = datetime.strptime(event_time_str, "%Y-%m-%d %I:%M %p")
+        else:
+            # Parse the input time for today
+            event_time = datetime.strptime(time_text, "%Y-%m-%d %I:%M %p")
 
         # Calculate the time difference between now and the event time
         time_difference = event_time - current_utc_time
@@ -188,6 +216,7 @@ class Outplayed:
         # If the event is today, add 1 day to the event time
         if time_difference.days == 0 and time_difference.seconds < 0:
             event_time += timedelta(days=1)
+
         # Print the event time in the desired format (yyyy-mm-dd hh:mm)
         formatted_event_time = event_time.strftime("%Y-%m-%d %H:%M")
         return formatted_event_time
@@ -210,27 +239,31 @@ class Outplayed:
                 print(f"Completed collecting data for the competition number {i}")
             except Exception as e:
                 print(e)
-                print(f"Failed to collect data for the competition number {i}")
+                print(f"Failed to collect data for the competition number {i}, have a look at it")
+                sleep(24)
 
     def scroll_down(self, element=""):
-        if element != "":
-            print("scrolling to the element")
-            #scroll down to the required element (It will be presented on top of the page, if possible)
-            self.driver.execute_script("arguments[0].scrollIntoView();", element)
-        else:
-            print("Scrolling to the bottom of the page")
-            # scroll down to the bottom of the page if no element was provided
-            self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+        try:
+            if element != "":
+                print("scrolling to the element")
+                #scroll down to the required element (It will be presented on top of the page, if possible)
+                self.driver.execute_script("arguments[0].scrollIntoView();", element)
+            else:
+                print("Scrolling to the bottom of the page")
+                # scroll down to the bottom of the page if no element was provided
+                self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+        except:
+            print("Cannot scroll for some reason")
 
 if __name__ == '__main__':
     print('Hello, I hope you have a lovely day')
     app = Outplayed()
     app.driver.get(app.main_url)
     app.driver.maximize_window()
-    sleep(8)
+    sleep(12)
     # app.get_tennis()
     app.accept_cookies()
     app.get_competitions()
-    print("age 1 collected")
+    print("page 1 collected")
     app.other_buttons()
     print("That's it my friend")
