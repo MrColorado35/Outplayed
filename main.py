@@ -190,6 +190,10 @@ class Outplayed:
         formatted_event_time = event_time.strftime("%Y-%m-%d %H:%M")
         return formatted_event_time
 
+    def accept_cookies(self):
+        cookies_btn  = self.driver.find_element(By.CSS_SELECTOR, "#onetrust-accept-btn-handler")
+        cookies_btn.click()
+        sleep(2)
 
 
     def other_buttons(self):
@@ -223,6 +227,7 @@ if __name__ == '__main__':
     app.driver.maximize_window()
     sleep(8)
     # app.get_tennis()
+    app.accept_cookies()
     app.get_competitions()
     print("age 1 collected")
     app.other_buttons()
