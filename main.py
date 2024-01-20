@@ -191,7 +191,7 @@ class Outplayed:
         return formatted_event_time
 
     def other_buttons(self):
-        buttons = self.driver.find_elements(By.XPATH, "//ms-item[contains(@class, 'collapsed')][position() >= 2]//ms-item//a")
+        buttons = self.driver.find_elements(By.XPATH, "//ms-item[contains(@class, 'collapsed')][position() >= 2]//a")
         for i in range(3):
             try:
                 btn = buttons[i]
@@ -199,7 +199,8 @@ class Outplayed:
                 sleep(3)
                 self.get_competitions()
                 print(f"Completed collecting data for the competition number {i}")
-            except:
+            except Exception as e:
+                print(e)
                 print(f"Failed to collect datafor the competition number {i}")
 
 if __name__ == '__main__':
