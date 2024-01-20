@@ -150,7 +150,7 @@ class Outplayed:
                         print(f'{k} = {v}')
 
                     # send details to MongoDB. "data" will be a name of table inside your database collection
-                    self.db.data.update_one({"tournament_name": tournament_name, "start_time": exact_time},
+                    self.db.data.update_one({"tournament_name": tournament_name, "last_fetched": time_now},
                                             {'$set': details}, upsert=True)
                 except:
                     print("Failed to collect required data, have a look at it tomorrow Stan, you are too tired")
@@ -186,7 +186,7 @@ class Outplayed:
         formatted_event_time = event_time.strftime("%Y-%m-%d %H:%M")
         return formatted_event_time
 
-
+/
 if __name__ == '__main__':
     print('Hello, I hope you had a lovely day')
     app = Outplayed()
