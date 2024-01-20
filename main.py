@@ -173,24 +173,8 @@ class Outplayed:
         except ValueError:
             print("Invalid input format. Please provide odds in the form 'a/b'.")
 
-    # collect details about the time
-    # def get_time(self, time_text):
-    #     # Get the current UTC time
-    #     current_utc_time = datetime.utcnow()
-    #
-    #     # Parse the input time
-    #     # event_time = datetime.strptime(time_text, "%Y-%m-%d %I:%M %p")
-    #     event_time = datetime.strptime(time_text, "Tomorrow / %I:%M %p")
-    #
-    #     # Calculate the time difference between now and the event time
-    #     time_difference = event_time - current_utc_time
-    #
-    #     # If the event is today, add 1 day to the event time
-    #     if time_difference.days == 0 and time_difference.seconds < 0:
-    #         event_time += timedelta(days=1)
-    #     # Print the event time in the desired format (yyyy-mm-dd hh:mm)
-    #     formatted_event_time = event_time.strftime("%Y-%m-%d %H:%M")
-    #     return formatted_event_time
+
+
     def get_time(self, time_text):
         # Get the current UTC time
         current_utc_time = datetime.utcnow()
@@ -221,14 +205,15 @@ class Outplayed:
         formatted_event_time = event_time.strftime("%Y-%m-%d %H:%M")
         return formatted_event_time
 
+    # Find and close cookies message
     def accept_cookies(self):
-        # Find and close cookies message
+
         cookies_btn  = self.driver.find_element(By.CSS_SELECTOR, "#onetrust-accept-btn-handler")
         cookies_btn.click()
         sleep(2)
 
     # Go through all tournaments
-    def other_buttons(self): #ms-item-tree.all-competitions
+    def other_buttons(self):
         buttons = self.driver.find_elements(By.XPATH, "//ms-item-tree[contains(@class, 'all-competitions')]//ms-item[contains(@class, 'collapsed')]/a") #[position() >= 2]/a")
         # buttons = self.driver.find_elements(By.CSS_SELECTOR, "ms-item.active+ ms-item-tree a")
         for i in range(6):
@@ -239,16 +224,13 @@ class Outplayed:
                 print("Button clicked")
                 sleep(3)
                 self.btn_level_2()
-                print("Second click performed")
-                # self.scroll_down()
-                # print("Scrolled down")
-                # self.get_competitions()
                 print(f"Completed collecting data for the competition number {i}")
             except Exception as e:
                 print(e)
                 print(f"Failed to collect data for the competition number {i}, have a look at it")
                 sleep(24)
 
+    # After going through expandable accordion, this function will click all links that contain "All" and collect the data from within them
     def btn_level_2(self):
         # second_click = self.driver.find_element(By.XPATH, "//ms-item-tree[contains(@class, 'all-competitions')]//ms-item[contains(@class, 'expanded')][last()]/following-sibling::ms-item-tree//a[1]")
         second_clicks = self.driver.find_elements(By.CSS_SELECTOR, "ms-item+ ms-item-tree.item-level-2 a.ms-active-highlight") #"ms-item.active + ms-item-tree a")
